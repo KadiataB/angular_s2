@@ -1,0 +1,101 @@
+/* Container principal */
+.appro-form-container {
+  @apply max-w-6xl mx-auto p-6;
+}
+
+/* En-tête */
+.appro-form-header {
+  @apply mb-8;
+}
+.appro-form-header h1 {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+/* Grille principale */
+.appro-form-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-8;
+}
+
+/* Colonne de gauche */
+.appro-form-left {
+  @apply lg:col-span-2 space-y-8;
+}
+
+/* Cards */
+.appro-card {
+  @apply bg-white rounded-lg border border-gray-200 p-6;
+}
+
+.appro-card h2 {
+  @apply text-xl font-semibold text-gray-900 mb-4;
+}
+
+/* Inputs & selects */
+.appro-input,
+.appro-select,
+.appro-textarea {
+  @apply w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.appro-textarea {
+  @apply h-24;
+}
+
+/* Montant total */
+.appro-input-disabled {
+  @apply w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50;
+}
+
+/* Boutons */
+.appro-btn-add {
+  @apply text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2;
+}
+
+.appro-btn-cancel {
+  @apply flex-1 border border-gray-300 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-50 transition duration-200;
+}
+
+.appro-btn-save {
+  @apply flex-1 bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition duration-200;
+}
+
+/* Colonne droite */
+.appro-form-right {
+  @apply lg:col-span-1;
+}
+
+.appro-right-card {
+  @apply bg-white rounded-lg border border-gray-200 p-6 sticky top-6;
+}
+
+.appro-right-empty {
+  @apply text-gray-500 text-center py-8;
+}
+
+.appro-right-article {
+  @apply border-b border-gray-200 py-3 last:border-b-0;
+}
+
+.appro-right-article-header {
+  @apply flex justify-between items-start mb-2;
+}
+
+.appro-right-article-quant-prix {
+  @apply grid grid-cols-2 gap-2 text-sm text-gray-600;
+}
+
+.appro-right-article-montant {
+  @apply text-sm font-medium text-gray-900 mt-1;
+}
+
+.appro-right-total {
+  @apply border-t border-gray-200 mt-4 pt-4;
+}
+
+.appro-right-total-value {
+  @apply flex justify-between items-center text-lg font-bold text-gray-900;
+}
+
+.appro-right-buttons {
+  @apply flex gap-3 mt-6;
+}

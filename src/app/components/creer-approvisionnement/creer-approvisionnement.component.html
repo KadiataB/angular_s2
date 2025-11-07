@@ -1,0 +1,92 @@
+<div class="container p-6">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold">Nouvel approvisionnement</h1>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Informations générales -->
+    <div class="md:col-span-2">
+      <div class="bg-white rounded-lg border p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">Informations générales</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Date d'approvisionnement</label>
+            <input type="date" class="input-field" value="2025-07-20">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Fournisseur</label>
+            <select class="select-field">
+              <option value="">Sélectionner un fournisseur</option>
+              <option>Textiles Dakar SARL</option>
+              <option>Mercerie Centrale</option>
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-2">Référence</label>
+            <input type="text" placeholder="Référence de l'approvisionnement" class="input-field">
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-2">Observations</label>
+            <textarea placeholder="Observations ou commentaires sur cet approvisionnement"
+                     class="input-field" style="height: 96px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détails de l'approvisionnement -->
+      <div class="bg-white rounded-lg border p-6">
+        <h2 class="text-xl font-semibold mb-4">Détails de l'approvisionnement</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium mb-2">Article</label>
+            <select class="select-field">
+              <option value="">Sélectionner un article</option>
+              <option>Tissu coton</option>
+              <option>Fil à coudre</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Quantité</label>
+            <input type="number" class="input-field">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Prix unitaire (FCFA)</label>
+            <input type="number" class="input-field">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">Montant total (FCFA)</label>
+          <input value="0" disabled class="input-field" style="background-color: var(--gray-50);">
+        </div>
+        <button class="text-primary font-medium flex items-center gap-2">
+          <span>+</span>
+          Ajouter un autre article
+        </button>
+      </div>
+    </div>
+
+    <!-- Articles ajoutés -->
+    <div>
+      <div class="bg-white rounded-lg border p-6">
+        <h2 class="text-xl font-semibold mb-4">Articles ajoutés</h2>
+        <div class="text-gray-500 text-center py-8">
+          Aucun article ajouté
+        </div>
+        <div class="border-t pt-4">
+          <div class="flex justify-between items-center text-lg font-bold">
+            <span>Total:</span>
+            <span>0 FCFA</span>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button class="flex-1 border border-gray-300 text-gray-700 rounded-lg px-4 py-2">
+            Annuler
+          </button>
+          <button class="flex-1 btn-primary">
+            Enregistrer l'approvisionnement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
