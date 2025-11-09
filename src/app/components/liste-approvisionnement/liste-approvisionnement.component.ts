@@ -1,55 +1,63 @@
-import { Component } from '@angular/core';
-import { ApprovisionnementService } from '../../services/approvisionnement.service';
-import { Approvisionnement } from '../../models/approvisionnement.model';
+import { Component, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Approvisionnement } from '../../models/approvisionnement.model';
+import { ApprovisionnementService } from '../../services/approvisionnement.service';
 
 @Component({
   selector: 'app-liste-approvisionnement',
   standalone: true,
-  imports: [CommonModule,RouterModule],
-  templateUrl: './liste-approvisionnement.component.html',
-  styleUrl: './liste-approvisionnement.component.scss'
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './liste-approvisionnement.component.html'
 })
 export class ListeApprovisionnementComponent {
+  // Signaux pour les filtres
+  searchTerm = signal('');
+  selectedFournisseur = signal('');
+  selectedArticle = signal('');
+  dateDebut = signal('');
+  dateFin = signal('');
+  tri = signal('date_desc');
 
-  approvisionnements: Approvisionnement[] = [];
-  searchTerm = '';
-  selectedFournisseur = '';
-  selectedArticle = '';
-  dateDebut = '';
-  dateFin = '';
-  tri = 'date_desc';
+  // Données du service (signaux)
+  approvisionnements = this.service.getAll();
+  totalApprovisionnements = this.service.totalApprovisionnements;
+  fournisseurPrincipal = this.service.fournisseurPrincipal;
+  nombreApprovisionnements = this.service.nombreApprovisionnements;
 
+  // Données statiques
   fournisseurs = this.service.fournisseurs;
   articlesDisponibles = this.service.articlesDisponibles;
 
-  constructor(private service: ApprovisionnementService) {}
+  // Signal calculé pour les données filtrées
+  filteredApprovisionnements = computed(() => {
+    const search = this.searchTerm().toLowerCase();
+    const fournisseur = this.selectedFournisseur();
+    const tri = this.tri();
 
-  ngOnInit() {
-    this.approvisionnements = this.service.getAll();
-  }
-
-  get filteredApprovisionnements() {
-    return this.approvisionnements.filter(appro => {
-      const matchesSearch = appro.reference.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                           appro.fournisseur.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesFournisseur = !this.selectedFournisseur || appro.fournisseur === this.selectedFournisseur;
+    let filtered = this.approvisionnements().filter(appro => {
+      const matchesSearch = appro.reference.toLowerCase().includes(search) ||
+                           appro.fournisseur.toLowerCase().includes(search);
+      const matchesFournisseur = !fournisseur || appro.fournisseur === fournisseur;
 
       return matchesSearch && matchesFournisseur;
     });
-  }
 
-  get totalApprovisionnements() {
-    return this.service.getTotalApprovisionnements();
-  }
+    // Trier par date
+    if (tri === 'date_desc') {
+      filtered = filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    } else {
+      filtered = filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    }
 
-  get fournisseurPrincipal() {
-    return this.service.getFournisseurPrincipal();
-  }
+    return filtered;
+  });
+
+  constructor(private service: ApprovisionnementService) {}
 
   getStatutBadgeClass(statut: string): string {
-    return statut === 'Reçu' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+    return statut === 'Reçu' ? 'badge-success' : 'badge-warning';
   }
 
   getStatutText(statut: string): string {

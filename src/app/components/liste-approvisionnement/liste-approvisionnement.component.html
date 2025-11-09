@@ -1,55 +1,76 @@
-<div class="container p-6">
+<div class="container">
   <!-- En-tête -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold">Gestion des Approvisionnements</h1>
+  <div style="margin-bottom: 32px;">
+    <h1 class="page-title">
+      <i class="bi bi-box-seam"></i>
+      Gestion des Approvisionnements
+    </h1>
   </div>
 
   <!-- Filtres et recherche -->
-  <div class="bg-white rounded-lg border p-6 mb-6">
-    <h2 class="text-lg font-semibold mb-4">Filtres et recherche</h2>
+  <div class="card">
+    <h2 class="section-title">
+      <i class="bi bi-funnel"></i>
+      Filtres et recherche
+    </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-      <input type="text" placeholder="Rechercher..." class="input-field">
-      <select class="select-field">
+    <div class="grid grid-4" style="margin-bottom: 16px;">
+      <input type="text"
+             placeholder="🔍 Rechercher..."
+             class="form-input"
+             [value]="searchTerm()"
+             (input)="searchTerm.set($any($event.target).value)">
+
+      <select class="form-select"
+              [value]="selectedFournisseur()"
+              (change)="selectedFournisseur.set($any($event.target).value)">
         <option value="">Tous les fournisseurs</option>
-        <option>Textiles Dakar SARL</option>
-        <option>Mercerie Centrale</option>
-        <option>Tissus Premium</option>
+        <option *ngFor="let f of fournisseurs" [value]="f">{{ f }}</option>
       </select>
-      <select class="select-field">
+
+      <select class="form-select"
+              [value]="selectedArticle()"
+              (change)="selectedArticle.set($any($event.target).value)">
         <option value="">Tous les articles</option>
-        <option>Tissu coton</option>
-        <option>Fil à coudre</option>
-        <option>Boutons</option>
+        <option *ngFor="let a of articlesDisponibles" [value]="a">{{ a }}</option>
       </select>
-      <select class="select-field">
-        <option value="date_desc">Date (récent → ancien)</option>
-        <option value="date_asc">Date (ancien → récent)</option>
+
+      <select class="form-select"
+              [value]="tri()"
+              (change)="tri.set($any($event.target).value)">
+        <option value="date_desc">📅 Date (récent → ancien)</option>
+        <option value="date_asc">📅 Date (ancien → récent)</option>
       </select>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-      <div class="flex items-center gap-2">
-        <span class="text-sm whitespace-nowrap">Du</span>
-        <input type="date" class="input-field">
+    <div class="grid grid-3" style="align-items: end;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">Du</span>
+        <input type="date"
+               class="form-input"
+               [value]="dateDebut()"
+               (input)="dateDebut.set($any($event.target).value)">
       </div>
-      <div class="flex items-center gap-2">
-        <span class="text-sm whitespace-nowrap">Au</span>
-        <input type="date" class="input-field">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 14px; color: var(--text-secondary); white-space: nowrap;">Au</span>
+        <input type="date"
+               class="form-input"
+               [value]="dateFin()"
+               (input)="dateFin.set($any($event.target).value)">
       </div>
       <div>
-        <a routerLink="/add" class="btn-primary">
-          <span>+</span>
+        <a routerLink="/add" class="btn btn-primary">
+          <i class="bi bi-plus-circle"></i>
           Nouvel approvisionnement
         </a>
       </div>
     </div>
   </div>
 
-  <hr class="mb-6">
+  <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
 
   <!-- Tableau -->
-  <div class="bg-white rounded-lg border overflow-hidden mb-6">
+  <div class="table-container">
     <table class="table">
       <thead>
         <tr>
@@ -63,55 +84,51 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="font-medium">APP-2023-001</td>
-          <td>15/04/2023</td>
-          <td>Textiles Dakar SARL</td>
-          <td>☐ articles</td>
-          <td class="font-medium">750 000 FCFA</td>
-          <td><span class="badge badge-livre">Reçu</span></td>
-          <td>☐ ✅ ☐ ✅</td>
-        </tr>
-        <tr>
-          <td class="font-medium">APP-2023-002</td>
-          <td>10/04/2023</td>
-          <td>Mercerie Centrale</td>
-          <td>☐ articles</td>
-          <td class="font-medium">320 000 FCFA</td>
-          <td><span class="badge badge-livre">Reçu</span></td>
-          <td>☐ ✅ ☐ ✅</td>
-        </tr>
-        <tr>
-          <td class="font-medium">APP-2023-003</td>
-          <td>05/04/2023</td>
-          <td>Tissus Premium</td>
-          <td>☐ articles</td>
-          <td class="font-medium">450 000 FCFA</td>
-          <td><span class="badge badge-en-attente">En attente</span></td>
-          <td>☐ ✅ ☐ ✅</td>
+        <tr *ngFor="let appro of filteredApprovisionnements()">
+          <td style="font-weight: 500;">{{ appro.reference }}</td>
+          <td>{{ appro.date | date:'dd/MM/yyyy' }}</td>
+          <td>{{ appro.fournisseur }}</td>
+          <td>{{ appro.articles.length }} articles</td>
+          <td style="font-weight: 500;">{{ appro.montantTotal | number }} FCFA</td>
+          <td>
+            <span class="badge">
+              {{ getStatutText(appro.statut) }}
+            </span>
+          </td>
+          <td>
+            <div class="actions" style="display:flex;gap:8px;">
+              <button class="icon-btn" title="Voir"><i class="bi bi-eye"></i></button>
+              <button class="icon-btn" title="Éditer"><i class="bi bi-pencil-square"></i></button>
+              <button class="icon-btn" title="Supprimer" style="color: red;"><i class="bi bi-trash"></i></button>
+
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
 
   <!-- Statistiques -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="bg-white rounded-lg border p-6">
-      <h3 class="text-lg font-semibold mb-2">Total des approvisionnements</h3>
-      <p class="text-2xl font-bold">2 720 000 FCFA</p>
-      <p class="text-sm text-gray-500 mt-1">Période: Avril 2023</p>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3 class="card-title"><i class="bi bi-graph-up"></i> Total des approvisionnements</h3>
+      <div class="stat-value">{{ totalApprovisionnements() | number }} FCFA</div>
+      <div class="stat-label">Total général</div>
     </div>
 
-    <div class="bg-white rounded-lg border p-6">
-      <h3 class="text-lg font-semibold mb-2">Nombre d'approvisionnements</h3>
-      <p class="text-2xl font-bold">5</p>
-      <p class="text-sm text-gray-500 mt-1">Période: Avril 2023</p>
+    <div class="stat-card">
+      <h3 class="card-title"><i class="bi bi-receipt"></i> Nombre d'approvisionnements</h3>
+      <div class="stat-value">{{ nombreApprovisionnements() }}</div>
+      <div class="stat-label">Total général</div>
     </div>
 
-    <div class="bg-white rounded-lg border p-6">
-      <h3 class="text-lg font-semibold mb-2">Fournisseur principal</h3>
-      <p class="text-lg font-bold">Textiles Dakar</p>
-      <p class="text-sm text-gray-500">1 430 000 FCFA (52.5%)</p>
+    <div class="stat-card">
+      <h3 class="card-title"><i class="bi bi-person-circle"></i> Fournisseur principal</h3>
+      <div class="stat-value">{{ fournisseurPrincipal().nom }}</div>
+      <div class="stat-label">
+        {{ fournisseurPrincipal().montant | number }} FCFA
+        ({{ fournisseurPrincipal().pourcentage | number:'1.1-1' }}%)
+      </div>
     </div>
   </div>
 </div>
